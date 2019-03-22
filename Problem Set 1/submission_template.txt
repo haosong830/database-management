@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 564, FALL 2018
+        PROBLEM SET 1 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the initial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+            Vinay Ninganagouda Patil
+        </name>
+        <netid>
+            <!-- Insert your NetID (NOT your student ID number!) below. -->
+            vpatil3
+        </netid>
+        <studentid>
+            <!-- Insert your student ID number below. -->
+            9079431293
+        </studentid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+            select j as i,i as j,val from A order by i,j;
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+            select SUM(A.val*B.val) from A,B where A.j==1 and B.j==2 and A.i==B.i;
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <answer number="1c">
+        <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
+            select SUM(A.val*B.val) from A,B where A.i==1 and B.j==2 and A.j==B.i;
+
+        ]]><!-- End problem 1, part (c). -->
+    </answer>
+    <answer number="1d">
+        <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
+            select A.i,B.j,SUM(A.val*B.val) as val from A,B where A.j==B.i group by A.i, B.j;
+
+        ]]><!-- End problem 1, part (d). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+            with groupsum(Store,AllSales) as (select s.store,sum(s.weeklysales) from Sales as s,Holidays as h where h.isHoliday='TRUE' and s.WeekDate==h.WeekDate group by store) select * from (select * from groupsum order by AllSales desc limit 1) as maxi union all select * from (select * from groupsum order by AllSales limit 1) as mini;
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+            with customview as (select S.WEEKDATE, ISHOLIDAY, sum(weeklysales) as total from sales as s,holidays as h where s.weekdate==h.weekdate group by s.weekdate) select count(*) as NumNonHolidays from customview as cv where isholiday=='FALSE' and cv.total> (select avg(total) from customview where isholiday=='TRUE');
+
+        ]]><!-- End problem 2, part (b). -->
+    </answer>
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+            select st.type as type,substr(sa.WeekDate,6,2) as Month,sum(sa.WeeklySales) as TotalSales from stores as st, sales as sa where st.Store==sa.Store group by type,Month;
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <answer number="2d">
+        <!-- Paste your solution to problem 2, part (d) below this line. --><![CDATA[
+            drop table  if exists result;
+            create table result (AttributeName VARCHAR(20), CorrelationSign Integer);
+            insert into result(AttributeName) values ('Temperature'),('FuelPrice'),('CPI'),('UnemploymentRate');
+
+            drop table  if exists relationData;
+            create table relationData as select * from sales s , temporaldata t where s.store=t.store and s.weekdate = t.weekdate;
+
+            drop table  if exists relationMean;
+            create table relationMean as select avg(weeklysales) as weeklysales,avg(temperature) as temperature,avg(fuelprice) as fuelprice,avg(cpi) as cpi,avg(unemploymentrate) as unemploymentrate from relationData;
+
+            update result set CorrelationSign =(select case sum((relationData.weeklysales-relationMean.weeklysales)*(relationData.temperature-relationMean.temperature))>0 when 1 then 1 else -1 end as temperature from relationData,relationMean) where AttributeName='Temperature';
+            update result set CorrelationSign =(select case sum((relationData.weeklysales-relationMean.weeklysales)*(relationData.fuelprice-relationMean.fuelprice))>0 when 1 then 1 else -1 end as fuel from relationData,relationMean) where AttributeName='FuelPrice';
+            update result set CorrelationSign =(select case sum((relationData.weeklysales-relationMean.weeklysales)*(relationData.cpi-relationMean.cpi))>0 when 1 then 1 else -1 end as cpi from relationData,relationMean) where AttributeName='CPI';
+            update result set CorrelationSign =(select case sum((relationData.weeklysales-relationMean.weeklysales)*(relationData.unemploymentrate-relationMean.unemploymentrate))>0 when 1 then 1 else -1 end as unemployment from relationData,relationMean) where AttributeName='UnemploymentRate';
+
+            select * from result;
+
+        ]]><!-- End problem 2, part (d). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+            select * from (select B as company,d as distance from streets where A='UW-Madison' and d<=10) as hop1 union all select * from (select s2.B as company,(s1.d + s2.d) as distance from streets as s1, streets as s2 where s1.A=='UW-Madison' and s1.B==s2.A and s2.B!=s1.A and (s1.d+s2.d)<=10) as hop2 union all select * from (select s3.B as company,(s1.d + s2.d + s3.d) as distance from streets as s1, streets as s2, streets as s3 where s1.A=='UW-Madison' and s1.B==s2.A and s2.B!=s1.A and s2.B==s3.A and s3.B!=s2.A and s3.B!=s1.A and (s1.d+s2.d+s3.d)<=10) as hop3 order by company;
+
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+            drop view if exists half_hop;
+            create view half_hop as
+            select * from (select B as company,d as distance from streets where A='UW-Madison' and d<=15) as hop1 union all select * from (select s2.B as company,(s1.d + s2.d) as distance from streets as s1, streets as s2 where s1.A=='UW-Madison' and s1.B==s2.A and s2.B!=s1.A and (s1.d+s2.d)<=15) as hop2 union all select * from (select s3.B as company,(s1.d + s2.d + s3.d) as distance from streets as s1, streets as s2, streets as s3 where s1.A=='UW-Madison' and s1.B==s2.A and s2.B!=s1.A and s2.B==s3.A and s3.B!=s2.A and s3.B!=s1.A and (s1.d+s2.d+s3.d)<=15) as hop3;
+            select half1.company as company_1,half2.company as company_2, (half1.distance+half2.distance) as distance from half_hop as half1,half_hop as half2 where half1.company!=half2.company and (half1.distance+half2.distance)<=15 order by company_1,company_2;
+       
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <answer number="3c">
+        <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+            delete from streets where id in (select s1.id from streets as s1, streets as s2, streets as s3 where s1.B==s2.A and s2.B==s3.A and s3.B==s1.A limit 1);
+
+        ]]><!-- End problem 3, part (c). -->
+    </answer>
+    <answer number="3d">
+        <!-- Paste your solution to problem 3, part (d) below this line. --><![CDATA[
+            with recursive longestpath(source,A,B,distance) as (select A,A,B,d from streets UNION select l.source,st.A,st.B,l.distance+st.d from longestpath as l,streets as st where l.B==st.A and st.B!=l.A) select source as A,B,distance from longestpath ORDER BY distance desc limit 1;
+
+        ]]><!-- End problem 3, part (d). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+
+</pset>

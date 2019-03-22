@@ -1,0 +1,15 @@
+{% extends "app_base.html" %}
+{% block content %}
+<h3> Select a Time </h3>
+<form method="POST" action="selecttime" class="form-inline">
+    {% if content is defined %}
+    {% if content['status']%}
+    <div class="alert alert-warning">{{ content['message'] }}</div>
+    {% else %}
+    <div class="alert alert-danger">{{ content['message'] }}</div>
+    {% endif %}
+    {% endif %}
+    <div class="alert alert-info">Please select a new time</div>
+    {% include 'timetable.html' %}
+</form>
+{% endblock %}

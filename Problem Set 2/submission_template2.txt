@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 564, Fall 2018
+        PROBLEM SET 2 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries (and potentially Python and Latex code) 
+	into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the intitial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+            Vinay Ninganagouda Patil
+        </name>
+        <netid>
+            <!-- Insert your NetID (NOT your student ID number!) below. -->
+            vpatil3
+        </netid>
+        <studentid>
+            <!-- Insert your student ID number below. -->
+            9079431293
+        </studentid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+
+            select provider from hospital group by provider having count(*)>1;
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+
+            select * from (select * from hospital group by zip,city) group by zip having count(*)>1 union select * from (select * from hospital group by zip,state) group by zip having count(*)>1;
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+
+            answer = True
+
+            explanation = "A,B is a superkey because its closure is {A,B,C,D,E,F}"
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+
+            answer = False
+
+            explanation = "Because the intersection of the pairs of decomposition don't give a superkey. Ex: C is not a superkey in either ABC or CDE"
+
+
+        ]]><!-- End problem 2, part (b). -->
+    </answer>    
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+
+            answer = False
+
+            explanation = "Because {A}->{D} and {D}->{F} are not implied by the decompositions"
+
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <answer number="2d">
+        <!-- Paste your solution to problem 2, part (d) below this line. --><![CDATA[
+
+            answer = True
+
+            explanation = "Because of the Armstrong's Transitivity Axiom - ({A}->{D}, {D}->{C} and {D}->{F})"
+
+        ]]><!-- End problem 2, part (d). -->
+    </answer>
+    <answer number="2e">
+        <!-- Paste your solution to problem 2, part (e) below this line. --><![CDATA[
+
+            answer = False
+
+            explanation = "Because the left hand side (A & D) of the non-trivial FD's are not superkeys in S"
+
+
+        ]]><!-- End problem 2, part (e). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+
+            $$ R_{1}  \leftarrow  \sigma_{affiliation="UW-Madison"}(Person \bowtie Author)$$
+
+            $$ R_{2}  \leftarrow  \pi_{name}(\sigma_{year="2018"}(R_{1} \bowtie JournalArticle))$$
+
+            $$ R_{3}  \leftarrow  \pi_{name}(\sigma_{year="2018"}(R_{1} \bowtie ConferenceArticle))$$
+
+            $$ R_{4}  \leftarrow  R_{2} - R_{3}$$
+
+
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+
+            $$ R_{1}  \leftarrow  \sigma_{name="John\, Doe"} (Person \bowtie Author)$$
+
+            $$ R_{2}  \leftarrow  \pi_{articleID}(R_{1} \bowtie JournalArticle)$$
+
+            $$ R_{3}  \leftarrow  \pi_{articleID}(R_{1} \bowtie ConferenceArticle)$$
+
+            $$ R_{4}  \leftarrow  R_{2} \cup R_{3}$$
+
+            $$ R_{5}  \leftarrow  \pi_{name}(\sigma_{name!="John\, Doe"}(Author \bowtie R_{4}))$$
+
+
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <answer number="3c">
+        <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+
+            $$ R_{1}  \leftarrow  \sigma_{name="John\, Doe"} (Person \bowtie Author)$$
+
+            $$ R_{2}  \leftarrow  \pi_{articleID}(\sigma_{year="2018"} (R_{1} \bowtie JournalArticle))$$
+
+            $$ R_{3}  \leftarrow  \pi_{articleID}(\sigma_{year="2018"} (R_{1} \bowtie ConferenceArticle))$$
+
+            $$ R_{4}  \leftarrow  \gamma_{count(articleID)}(R_{2} \cup R_{3})$$
+
+
+        ]]><!-- End problem 3, part (c). -->
+    </answer>
+    <answer number="3d">
+    <!-- Paste your solution to problem 3, part (d) below this line. --><![CDATA[
+
+        $$ R_{1}  \leftarrow  Person \bowtie Author$$
+
+        $$ R_{2}  \leftarrow  \gamma_{name,year,count(articleID)}(\sigma_{year>="2000" and\, year<="2018"}\,\,\, (R_{1} \bowtie ConferenceArticle))$$
+
+        $$ R_{3}  \leftarrow  \rho_{name,year,conferenceCount}(R_{2})$$
+
+        $$ R_{4}  \leftarrow  \gamma_{name,year,count(articleID)}(\sigma_{year>="2000" and\, year<="2018"}\,\,\, (R_{1} \bowtie JournalArticle))$$
+
+        $$ R_{5}  \leftarrow  \rho_{name,year,journalCount}(R_{4})$$
+
+        $$ R_{6}  \leftarrow  R_{3} \bowtie R_{5}$$
+
+        $$ R_{7}  \leftarrow  \pi_{name}(R_{6}) - \pi_{name}(\sigma_{conferenceCount<journalCount}(R_{6}))$$
+
+        ]]><!-- End problem 3, part (d). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+</pset>

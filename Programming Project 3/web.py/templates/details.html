@@ -1,0 +1,70 @@
+{% extends "app_base.html" %}
+{% block content %}
+<h3>Details for the selected auction(Scroll down for more details!)</h3>
+
+<div><b><a href="#" id="back">Back To Search Results</a></b></div>
+<script type="text/javascript">
+	document.getElementById('back').addEventListener("click", function (event) {
+		window.history.back();
+	});
+</script>
+<noscript>
+	<div class="alert alert-danger">Please Enable JS To See Full Functionality</div>
+</noscript>
+
+<h3>Item Details</h3>
+{% if search_result['Item Details'] %}
+<table class="table table-bordered table-striped">
+
+	{% for item in search_result['Item Details'] %}
+	<tr>
+		<th>{{item}}</th>
+		<td>{{search_result['Item Details'][item]}}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% else %}
+<div class="alert alert-info">No results</div>
+{% endif %}
+
+<h3>Categories List</h3>
+{% if search_result['Categories List'] %}
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>Caterory Name</th>
+		</tr>
+	</thead>
+	{% for category in search_result['Categories List'] %}
+	<tr>
+		<td>{{ category|e }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% else %}
+<div class="alert alert-info">No results</div>
+{% endif %}
+
+<h3>Bids on the Item</h3>
+{% if search_result['Bids on the Item'] %}
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>User</th>
+			<th>Amount</th>
+			<th>Time</th>
+		</tr>
+	</thead>
+	{% for bid in search_result['Bids on the Item'] %}
+	<tr>
+		<td>{{ bid['user']|e }}</td>
+		<td>{{ bid['amount']|e }}</td>
+		<td>{{ bid['time']|e }}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% else %}
+<div class="alert alert-info">No results</div>
+{% endif %}
+
+{% endblock %}
